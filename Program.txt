@@ -1,0 +1,43 @@
+#include <SoftwareSerial.h>
+String Data;
+int PIN_RLY1 = 8;
+int PIN_RLY2 = 9;
+boolean StatusRly1 = 0;
+boolean StatusRly2 = 0;
+SoftwareSerial Bluetooth(10, 11); // RX, TX
+void setup() {
+  Bluetooth.begin(9600);
+  pinMode(PIN_RLY1, OUTPUT);
+  pinMode(PIN_RLY2, OUTPUT);
+  digitalWrite(PIN_RLY1, HIGH);
+  digitalWrite(PIN_RLY2, HIGH);
+}
+//*********************************************Subprogram loop()
+void loop() {
+  if (Bluetooth.available()) {
+    Data = Bluetooth.readString();
+    Data.trim();
+    if (Data == "LightSwitch") {
+      if (StatusRly1 == 0) {
+        StatusRly1 = 1;
+        digitalWrite(PIN_RLY1, LOW);
+        Bluetooth.println("LightSwitchON");
+      } else {
+        StatusRly1 = 0;
+        digitalWrite(PIN_RLY1, HIGH);
+        Bluetooth.println("LightSwitchOFF");
+      }
+    }
+    if (Data == "PowerOutlet") {
+      if (StatusRly2 == 0) {
+        StatusRly2 = 1;
+        digitalWrite(PIN_RLY2, LOW);
+        Bluetooth.println("PowerOutletON");
+      } else {
+        StatusRly2 = 0;
+        digitalWrite(PIN_RLY2, HIGH);
+        Bluetooth.println("PowerOutletOFF");
+      }
+    }
+  }
+}
